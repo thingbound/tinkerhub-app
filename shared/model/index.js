@@ -15,6 +15,17 @@ const instance = {
         this.devices = [];
 
         this.reload();
+
+        this._monitor();
+    },
+
+    _monitor() {
+        clearInterval(this._reloader);
+        this._reloader = setInterval(this.reload.bind(this), 60000);
+    },
+
+    _stopMonitoring() {
+        clearInterval(this._reloader);
     },
 
     reload() {
@@ -44,5 +55,14 @@ const instance = {
         });
     }
 };
+
+AppState.addEventListener('change', state => {
+    if(state === 'background') {
+        instance._stopMonitoring();
+    } else {
+        instance._monitor();
+        instance.reload();
+    }
+});
 
 export default instance;
