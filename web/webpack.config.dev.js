@@ -6,7 +6,7 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'static'),
         proxy: {
-            '/v1': 'http://localhost:10000'
+            '/v1': process.env.API || 'http://localhost:10000'
         }
     },
     entry: [
