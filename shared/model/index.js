@@ -9,6 +9,10 @@ const instance = {
         events.on(e, l);
     },
 
+	off(e, l) {
+		events.removeListener(e, l);
+	},
+
     set api(api) {
         this._api = api;
         this.sensorValues = {};

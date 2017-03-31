@@ -10,9 +10,27 @@ export default class Space {
         this.devices = def.devices;
     }
 
-    _pick(tag) {
+    get() {
+		let tags = {};
+        let total = 0;
+        Array.prototype.forEach.call(arguments, tag => {
+            tags[tag] = true;
+            total++;
+        });
+
         return this.devices
-            .filter(device => device.tags.indexOf(tag) >= 0)
+            .filter(device => {
+				let hits = 0;
+	            device.tags.forEach(tag => {
+	                if(tags[tag]) hits++;
+	            });
+
+	            return hits === total;
+			});
+    }
+
+    _pick() {
+        return this.get.apply(this, arguments)
             .map(device => this.model.sensorValues[device.id]);
     }
 
@@ -33,5 +51,16 @@ export default class Space {
             .filter(value => typeof value !== 'undefined');
         const sum = values.reduce((p, c) => p + c, 0);
         return sum / values.length;
+    }
+
+    sensorValues() {
+        return this.get.apply(this, arguments)
+			.map(device => {
+				const values = this.model.sensorValues[device.id];
+				return {
+					device: device,
+					values: values
+				};
+			});
     }
 }

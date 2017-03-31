@@ -2,23 +2,37 @@
 import React, { Component } from 'react';
 import { Text, View, } from 'react-native';
 
-import SensorTile from './tiles/sensor';
+import SensorTile from './sensor/tile';
 
-export default class Overview extends Component {
+import ModelAwareComponent from './component';
+
+export default class Overview extends ModelAwareComponent {
     constructor(props) {
         super(props);
     }
 
     render() {
-        const space = this.props.space;
+        const space = this.model.space();
 
-        const temperature = space.temperature;
-        const relativeHumidity = space.relativeHumidity;
+        const makeSensorTile = (type) => {
+            const value = space[type];
+            if(typeof value === 'undefined') return;
+
+            return (
+                <SensorTile style={{ margin: 2.5 }}
+                    onPress={ () => this.props.navigation.navigate('SensorOverview', {
+                        space: space.id,
+                        type: type
+                    })}
+                    type={ type }
+                    value={ value } />
+            );
+        };
 
         return (
             <View style={{ margin: 2.5, flexDirection: 'row' }}>
-                { typeof temperature === 'undefined' ? null : <SensorTile style={{ margin: 2.5 }} title='Temperature' type='temperature' value={ temperature.value } unit={ temperature.unit } /> }
-                { typeof relativeHumidity === 'undefined' ? null : <SensorTile style={{ margin: 2.5 }} title='Humidity' type='relativeHumidity' value={ relativeHumidity } unit='%' /> }
+                { makeSensorTile('temperature') }
+                { makeSensorTile('relativeHumidity') }
             </View>
         );
     }

@@ -20,7 +20,7 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!(react-native-|autoresponsive-react-native)).*/,
+                exclude: /node_modules\/(?!(react-)).*/,
                 include: [
                     path.resolve(__dirname, '../shared'),
                     path.resolve(__dirname, '../')
